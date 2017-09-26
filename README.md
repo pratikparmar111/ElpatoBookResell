@@ -1,4 +1,8 @@
 # ElpatoBookResell
 ElpatoBookResell demo repository 
 
-//this is project devloped For referncing to eCommerce 
+This project is allow student to sell there books to other student 
+
+This project only ment for study porpose.
+
+This software is not used in Commercial envirenment 
