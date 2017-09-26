@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="061618c07058467c940a9cfea72a508e" Name="Diagram1" ZoomLevel="77">
+        <EntityTypeShape EntityType="elpatobookresellModel.C__MigrationHistory" Width="1.5" PointX="7.75" PointY="10.625" />
+        <EntityTypeShape EntityType="elpatobookresellModel.AspNetRole" Width="1.5" PointX="0.75" PointY="9.25" />
+        <EntityTypeShape EntityType="elpatobookresellModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="10.875" />
+        <EntityTypeShape EntityType="elpatobookresellModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="16.25" />
+        <EntityTypeShape EntityType="elpatobookresellModel.AspNetUser" Width="1.5" PointX="3" PointY="7.875" />
+        <EntityTypeShape EntityType="elpatobookresellModel.OrderDetail" Width="1.5" PointX="10.5" PointY="6.75" />
+        <EntityTypeShape EntityType="elpatobookresellModel.Order" Width="1.5" PointX="8.25" PointY="0.75" />
+        <EntityTypeShape EntityType="elpatobookresellModel.OrderStatu" Width="1.5" PointX="6" PointY="3.375" />
+        <EntityTypeShape EntityType="elpatobookresellModel.pageckeditor" Width="1.5" PointX="0.75" PointY="2.625" />
+        <EntityTypeShape EntityType="elpatobookresellModel.premiumUser" Width="1.5" PointX="5.25" PointY="13.625" />
+        <EntityTypeShape EntityType="elpatobookresellModel.Review" Width="1.5" PointX="7.5" PointY="6.75" />
+        <EntityTypeShape EntityType="elpatobookresellModel.sysdiagram" Width="1.5" PointX="9.75" PointY="10.625" />
+        <AssociationConnector Association="elpatobookresellModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="elpatobookresellModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="elpatobookresellModel.FK_premiumUser_AspNetUsers" />
+        <AssociationConnector Association="elpatobookresellModel.FK_OrderDetails_Orders" />
+        <AssociationConnector Association="elpatobookresellModel.FK_Orders_OrderStatus" />
+        <AssociationConnector Association="elpatobookresellModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="elpatobookresellModel.Product" Width="1.5" PointX="5.25" PointY="6.125" />
+        <AssociationConnector Association="elpatobookresellModel.FK_Products_AspNetUsers" />
+        <AssociationConnector Association="elpatobookresellModel.FK_OrderDetails_Products" />
+        <AssociationConnector Association="elpatobookresellModel.FK_Reviews_Products" />
+        <EntityTypeShape EntityType="elpatobookresellModel.Category" Width="1.5" PointX="3" PointY="5" />
+        <AssociationConnector Association="elpatobookresellModel.FK_Products_Categories" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

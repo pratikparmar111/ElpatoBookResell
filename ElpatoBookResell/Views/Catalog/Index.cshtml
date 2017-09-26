@@ -1,0 +1,104 @@
+﻿@model IEnumerable<MVCManukauTech.Models.Product>
+
+@{
+    //Are we showing all the products or only one category?
+    if (ViewBag.CategoryName == null)
+    {
+        ViewBag.Title = "Catalog";
+    }
+    else
+    {
+        ViewBag.Title = "Catalog - " + ViewBag.CategoryName;
+    }
+}
+@*    for data table //https://www.youtube.com/watch?v=z5CIMlLNOe4
+    http://www.dotnetawesome.com/2015/11/implement-jquery-datatable-in-aspnet-mvc.html
+
+    //Displaying image on Datatable
+    https://stackoverflow.com/questions/28152698/displaying-image-on-datatable
+
+    //To set datatable properties
+    https://datatables.net/reference/option/lengthMenu
+
+*@
+
+<h2>@ViewBag.Title</h2>
+
+
+<div style="width:90%; margin:0 auto;">
+    <table id="myTable" class="table">
+        <thead>
+            <tr>
+                <th>ISBNNum</th>
+                <th>BookName</th>
+                <th>ImageFileName</th>
+
+                <th>UnitCost</th>
+                <th>Description</th>
+                <th></th>
+                @*<th>Details</th>*@
+            </tr>
+        </thead>
+    </table>
+</div>
+<style>
+    tr.even {
+        background-color: #F5F5F5 !important;
+    }
+</style>
+
+@* Load datatable css *@
+<link href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" rel="stylesheet" />
+@* Load datatable js *@
+@section Scripts{
+    @*<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+       
+        $(document).ready(function () {
+           
+            $("#myTable").DataTable({
+                "pageLength": 6,
+                "lengthMenu": [[6, 10, 25, 50, -1], [6, 10, 25, 50, "All"]],
+                "ajax": {
+                    "url": "/Catalog/Loaddata",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    
+                    { "data": "ISBNNum", "10%": true },
+                    { "data": "BookName", "20%": true },
+                    {
+                        'orderable': false,
+                        "render": function (data, type, JsonResultRow, meta) {
+                            return '<img width="100px" src="~/../../Images/' + JsonResultRow.ImageFileName + '">';
+                        }
+                    },
+                    { "data": "UnitCost", "10%": true },
+                    { "data": "Description", "30%": true },
+                    {
+                        'orderable': false,
+                        "render": function (data, type, JsonResultRow, meta) {
+                            return '<input type="button" class="btn btn-primary" value="Add to Cart" onclick="NavCart(' + "'" + JsonResultRow.ProductId + "'" + ')" /></br></br>'
+                                + '<input type="button" class="btn btn-default" value="Show Detail" onclick="NavDetails(' + "'" + JsonResultRow.ProductId + "'" + ')" />'
+                                ;
+                        }
+                    }
+                ]
+            });
+          //  $("#myTable_length").find('select').prepend($('<option selected value="6">6</option>'));       
+           
+        });
+    </script>
+}
+
+<script type="text/javascript">
+    function NavDetails(ProductId) {
+        window.location.replace("/Catalog/Details?ProductId=" + ProductId);
+    }
+
+    function NavCart(ProductId) {
+        window.location.replace("/OrderDetails/ShoppingCart?ProductId=" + ProductId);
+    }
+</script>

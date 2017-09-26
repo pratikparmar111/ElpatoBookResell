@@ -1,0 +1,172 @@
+﻿@model MVCManukauTech.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage your account";
+}
+
+<h2>@ViewBag.Title.</h2>
+<script type="text/javascript" src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="row">
+    <div class="col-md-8">
+        <p>
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Change your password", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Pick a password", "SetPassword")
+            }
+        </p>
+        <p>
+            Phone Number: @(Model.PhoneNumber ?? "None") [
+            @if (Model.PhoneNumber != null)
+            {
+                @Html.ActionLink("Change", "AddPhoneNumber")
+                @: &nbsp;|&nbsp;
+                @Html.ActionLink("Remove", "RemovePhoneNumber")
+            }
+            else
+            {
+                @Html.ActionLink("Add", "AddPhoneNumber")
+            }
+            ]
+        </p>
+        <p>
+            External Logins: @Model.Logins.Count
+            @Html.ActionLink("[Manage]", "ManageLogins")
+        </p>
+        @if (Model.TwoFactor)
+        {
+            <form method="post" action="/Manage/DisableTFA">
+                <p>
+                    Two factor is currently enabled:
+                    <input type="submit" value="Disable" class="btn btn-default" />
+                </p>
+            </form>
+        }
+        else
+        {
+            <form method="post" action="/Manage/EnableTFA">
+                <p>
+                    Two factor is currently disabled:
+                    <input type="submit" value="Enable" class="btn btn-default" />
+                </p>
+            </form>
+        }
+        @if (Model.BrowserRemembered)
+        {
+            <form method="post" action="/Manage/ForgetBrowser">
+                <p>
+                    Browser is curently remembered for two factor:
+                    <input type="submit" value="Forget Browser" class="btn btn-default" />
+                </p>
+            </form>
+        }
+        else
+        {
+            <form method="post" action="/Manage/RememberBrowser">
+                <p>
+                    Browser is curently not remembered for two factor:
+                    <input type="submit" value="Remember Browser" class="btn btn-default" />
+                </p>
+            </form>
+        }
+        <form method="post" action="/Manage/ShopPrime">
+            <p>
+                Browser is curently not remembered for two factor:
+                <input id="submitShopPrime" type="submit" value="Submit" class="btn btn-default" style="display:none" />
+            </p>
+        </form>
+
+        @if (ViewBag.Message_Prime == "Y")
+        {
+            <p>Your Prime membership is expire on : <b> @Html.ViewBag.Message_PrimeDate </b></p>
+        }
+        else
+        {
+            if (ViewBag.Message_Prime == "E") /*for expired message*/
+            {
+                <h4>Prime Memebership :</h4>
+                <div class="alert alert-danger">
+                    <strong>Alert!</strong> Your prime membership is expired on <b style="color:red"> @Html.ViewBag.Message_PrimeDate </b>
+                    
+                    <div id="paypal-button"></div> 
+                    <p> Renew at $29.99</p>
+                </div>
+            }
+            else
+            {
+                <div class="raw">
+                    <div class="col-lg-12">
+                        <h4>Prime Memebership :</h4>
+                        <p>
+                            <div id="paypal-button"></div> <p> Buy at $29.99</p>
+                        </p>
+                    </div>
+                </div>
+            }
+           
+           
+        }
+
+    </div>
+</div>
+@*//pay pal coderefer from https://developer.paypal.com/docs/integration/direct/express-checkout/integration-jsv4/client-side-REST-integration/ *@
+<script>
+
+
+    //for disabling right click to avoid fraud payment
+
+    //ref :// https://stackoverflow.com/questions/737022/how-do-i-disable-right-click-on-my-web-page
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    //paypal
+    paypal.Button.render({
+
+        env: 'sandbox', // Or 'sandbox'
+
+        client: {
+            sandbox: 'AbXxOLFKFp3PTRMQM78yk3cLAzBMOtjGxRc7IOWoClewscGtrqaSHPP7zpoUvciWjPX8yhGmuExYLHrw',
+            production: 'xxxxxxxxx'
+        },
+
+        style: {
+            size: 'small',
+            color: 'blue',
+            shape: 'rect',
+            label: 'buynow',
+            tagline: false,
+            branding: true,
+        },
+        
+        commit: true, // Show a 'Pay Now' button
+
+        payment: function (data, actions) {
+            return actions.payment.create({
+                payment: {
+                    transactions: [
+                        {
+                            amount: { total: '29.99', currency: 'NZD' }
+                        }
+                    ]
+                }
+            });
+        },
+
+        onAuthorize: function (data, actions) {
+            return actions.payment.execute().then(function (payment) {
+                //alert("payment received $29.99");
+                $("#submitShopPrime").click();
+                // The payment is complete!
+                // You can now show a confirmation message to the customer
+            });
+        }
+
+    }, '#paypal-button');
+
+
+
+</script>
+

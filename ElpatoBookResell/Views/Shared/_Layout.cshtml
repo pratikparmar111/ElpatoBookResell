@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="~/Images/capital-e-245689/capital-e-72-245689.png" sizes="96x96">
+    
+    <title>...Working|| Elpato Book Resell</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/ckeditor")   
+    <script src="~/Scripts/jquery-3.1.1.js"></script> @*//hideing it to remove conflick in angular*@   
+   
+    @*// for the showing working when page load*@
+    <script language="javascript" type="text/javascript">
+         window.onbeforeunload = function (event) {
+             $("title").html("...Working|| Elpato Book Resell");
+         };
+        $(document).ready(function ()
+        {           
+            $("title").html('@ViewBag.Title' +' || Elpato Book Resell'); 
+         });
+    </script>
+   
+</head>
+@*My app is used for auto bootstrap an angular app*@
+<body  >
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="~/Home">Home</a></li>
+                    <li><a href="~/Catalog">Catalog</a></li>
+                    @*140904 JPC add ProductsAdmin to links visible only to role Admin*@
+                    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <li><a href="~/RolesAdmin">Roles </a></li>
+                        <li><a href="~/UsersAdmin">Users </a></li>
+                        <li><a href="~/pageckeditor">Page Editor</a></li>
+                        <li><a href="~/Categories">Books Category</a></li>
+                    }
+                    @if (Request.IsAuthenticated && User.IsInRole("Client"))
+                    {
+                        <li><a href="~/Products">Products </a></li>
+                        <li><a href="~/OrderDetails/ShoppingCart">Shopping Cart</a></li>
+                    }
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    @*140903 JPC hard-coded for prototyping only - TODO make this dynamic!
+                        "partial view" looks like a good possibility.  Article ref:
+                        http://rachelappel.com/razor/partial-views-in-asp-net-mvc-3-w-the-razor-view-engine/
+                    *@                  
+                    
+                    <li><a href="~/Home/Contact">Contact</a></li>
+
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+
+    <!-- Trigger the modal with a button -->
+    <button id="ModelPrime" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="display:none;">Open Modal</button>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Alert</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <p>Your prime member ship is expired. Go to Manage page for renew it.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="setprimeStatusShownYes()" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p> &copy; 2017 Elpato Book Resell  &nbsp;&nbsp; </p>
+        </footer>
+    </div>
+  
+    @*@Scripts.Render("~/bundles/jquery")*@      
+    @Scripts.Render("~/bundles/bootstrap")    
+   
+
+
+    @*<script>
+        $('body>.container').height(
+            $(window).height() -
+            $('body>.container-fluid').height() -
+            $('body>footer').height()
+        );
+      </script> *@
+    <script type="text/javascript" language="javascript">
+        var primeStatus = '@Request.RequestContext.HttpContext.Session["primeStatus"]';
+        var primeStatusShown = '@Request.RequestContext.HttpContext.Session["primeStatusShown"]';
+    
+        if (primeStatus == "ExpiredPrime" && primeStatusShown == "No" ) {
+
+        document.getElementById("ModelPrime").click();
+        }
+        function setprimeStatusShownYes()
+        {
+            var xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            var url = "/Manage/SetprimeStatusShown";
+            xmlhttp.open("GET", url, false);
+            xmlhttp.send();
+
+            //20170823 JPC improve the auto-suggest UI
+            var rawResponse = xmlhttp.responseText;
+            
+            var primeStatusShown1 = '@Request.RequestContext.HttpContext.Session["primeStatusShown"]';
+        }
+    </script>
+  
+    @RenderSection("scripts", required: false)
+</body>
+</html>

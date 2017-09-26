@@ -1,0 +1,154 @@
+﻿@model IEnumerable<MVCManukauTech.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    /*--- DROPDOWN ---*/
+    #suggestions {
+        list-style: none;
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+    }
+    .btn-width-2 {
+        width: 80px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+   
+</style>
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<h2>Index</h2>
+
+
+<div class="raw" style="margin-bottom:80px;">
+    <div class="col-lg-12">
+        <div class="col-lg-1" style="">
+            <p class="btn btn-default"><span class="glyphicon glyphicon-plus"></span>  @Html.ActionLink("Create New", "Create")</p>
+        </div>
+        <div class="col-lg-6">
+        </div>
+        <form id="SearchForm" action="" method="post" autocomplete="off" style="margin-bottom:10px;">    
+            <div class="col-lg-3">
+                <input type="text" id="SearchString" name="SearchString" list="suggestions"
+                       style="width:25em" onkeyup="XAjaxRequest(this.value);" class="form-control" placeholder="Search Books" />
+                <div id="suggestions" style="position:absolute;visibility:hidden;z-index:10;"></div>
+            </div>
+            <div class="col-lg-1" style="margin-left:10px; ">
+                <button type="submit" class="btn btn-info" id="SearchButton">
+                    <span class="glyphicon glyphicon-search"></span> Search
+                </button>
+            </div>           
+        </form>
+    </div>
+
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.BookName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageFileName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ISBNNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category.CategoryName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageFileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ISBNNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.CategoryName)
+            </td>
+            <td width="10%">                
+                @Html.ActionLink(" Edit","Edit", new { id = item.ProductId } ,new { @class = "glyphicon glyphicon-pencil btn-sm btn-success btn-width-2" }) 
+                @Html.ActionLink(" Details", "Details", new { id = item.ProductId }, new { @class = "glyphicon glyphicon-tasks btn-sm btn-info btn-width-2" }) 
+                @Html.ActionLink(" Delete", "Delete", new { id = item.ProductId }, new { @class = "glyphicon glyphicon-remove-sign btn-sm btn-danger btn-width-2" })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //console.log("ready!");
+        $("#SearchString").focus();
+    });
+    function XAjaxRequest(searchString) {
+        var oeSuggestions = document.getElementById("suggestions");
+        oeSuggestions.innerHTML = "";
+        if (searchString.length < 3) {
+            //to hide block when value is null
+            if (searchString.length == 0) {
+                oeSuggestions.style.visibility = "hidden";
+            }
+            return;
+        }
+
+        //clear the options before each query process
+        //Ref stackoverflow: https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+
+
+        //alert("testing searchString=" + searchString);
+        var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        var url = "/Products/ajaxsearch?SearchString=" + searchString;
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send();
+
+        //20170823 JPC improve the auto-suggest UI
+        var rawResponse = xmlhttp.responseText;
+        var oResponse = JSON.parse(rawResponse);
+        //alert(rawResponse);
+
+
+        for (i = 0; i < oResponse.length; i++) {
+            oeSuggestions.innerHTML += "<input type='button' value='" + oResponse[i] + "' onclick='XSubmit(this.value);' style='width:24em;' /><br />";
+        }
+        //oeSuggestions.style.visibility = "visible";
+        $('#suggestions').css({
+            top: $("#SearchString").position().top + $("#SearchString").height(),
+            left: $("#SearchString").position().left,
+            width: $("#SearchString").width,
+            visibility: "visible"
+        });
+    }
+    function XSubmit(searchString) {
+        var oeSearch = document.getElementById("SearchString");
+        oeSearch.value = searchString;
+        document.getElementById("SearchButton").click();
+    }
+</script>
